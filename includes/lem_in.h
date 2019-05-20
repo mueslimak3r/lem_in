@@ -6,14 +6,14 @@
 /*   By: alkozma <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/19 21:34:59 by alkozma           #+#    #+#             */
-/*   Updated: 2019/05/19 22:38:38 by alkozma          ###   ########.fr       */
+/*   Updated: 2019/05/20 05:03:49 by alkozma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LEM_IN_H
 # define LEM_IN_H
 
-# define MAX_ROOMS	5000
+# define MAX_ROOMS	10000
 # define MAX_LINKS	100
 
 # include 			"../libft/libft.h"

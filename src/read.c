@@ -6,7 +6,7 @@
 /*   By: alkozma <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/19 21:22:04 by alkozma           #+#    #+#             */
-/*   Updated: 2019/05/19 22:38:36 by alkozma          ###   ########.fr       */
+/*   Updated: 2019/05/20 05:05:42 by alkozma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ static int		handle_room(t_map *in, char *line, int stat)
 	if (!tmp[1] || ++in->hash_info.size > MAX_ROOMS)
 		return (0);
 	hash = hash_id(tmp[0]);
+	if (in->hash_info.data[hash])
+		ft_printf("COLLISION\n");
 	in->hash_info.data[hash] = ft_strdup(tmp[0]);
 	if (stat == 1 || stat == -1)
 		(stat == 1) ? (in->start = hash) : (in->end = hash);
@@ -86,14 +88,15 @@ int			read_data(t_map *in)
 	return (1);
 }
 
-uint16_t	hash_id(char *id)
+uint16_t	hash_id(char *s)
 {
-	uint16_t		hash;
-	unsigned char	x;
-
-	hash = 5381;
-	while ((x = *id++)) {
-		hash = ((hash << 5L) + hash) + x;
-	}
-	return ((uint16_t)(hash % MAX_ROOMS));
+    unsigned long   h = 0, high;
+    while ( *s )
+    {
+        h = ( h << 4 ) + *s++;
+        if (( high = h & 0xF0000000 ))
+            h ^= high >> 24;
+        h &= ~high;
+    }
+    return (h % MAX_ROOMS);
 }
