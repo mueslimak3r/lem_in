@@ -6,13 +6,13 @@
 #    By: calamber <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/09/17 11:20:37 by calamber          #+#    #+#              #
-#    Updated: 2019/01/18 16:32:23 by calamber         ###   ########.fr        #
+#    Updated: 2019/05/19 22:27:33 by alkozma          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = ft_select
+NAME = lem-in
 
-SRC = main.c args.c signals.c loop.c printer.c
+SRC = main.c read.c
 
 OBJ = $(SRC:.c=.o)
 
