@@ -12,7 +12,7 @@
 
 NAME = lem-in
 
-SRC = main.c read.c
+SRC = main.c read.c solve.c
 
 OBJ = $(SRC:.c=.o)
 

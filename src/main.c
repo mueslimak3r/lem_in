@@ -12,12 +12,19 @@
 
 #include "../includes/lem_in.h"
 
+int		throw_err(char *s, int stat)
+{
+	write(1, s, ft_strlen(s));
+	return (stat);
+}
+
 int		main(void)
 {
-	t_map	*in;
+	t_map	in;
 
-	in = (t_map*)malloc(sizeof(t_map));
-	if (!read_data(in))
-		return (ft_printf("ERR\n"));
-	ft_printf("%s\n", in->hash_info.data[in->end]);
+	ft_memset(&in, 0, sizeof(t_map));
+	if (!read_data(&in))
+		return (throw_err("ERR\n", 0));
+	solve(&in);
+	return (0);
 }
