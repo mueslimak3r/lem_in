@@ -31,6 +31,11 @@ static int		handle_link(t_map *in, char *line)
 		i++;
 	while (in->hash_info.matrix[h2][n])
 		n++;
+	if (in->hash_info.matrix[h1][i] || in->hash_info.matrix[h2][n])
+	{
+		ft_printf("LINK COLLISION\n");
+		return (0);
+	}
 	in->hash_info.matrix[h1][i] = h2;
 	in->hash_info.matrix[h2][n] = h1;
 	return (1);
@@ -48,7 +53,10 @@ static int		handle_room(t_map *in, char *line, int stat)
 		return (0);
 	hash = hash_id(tmp[0]);
 	if (in->hash_info.data[hash])
-		ft_printf("COLLISION\n");
+	{
+		ft_printf("ROOM COLLISION\n");
+		return (0);
+	}
 	in->hash_info.data[hash] = ft_strdup(tmp[0]);
 	if (stat == 1 || stat == -1)
 		(stat == 1) ? (in->start = hash) : (in->end = hash);
@@ -61,9 +69,13 @@ static int		handle_room(t_map *in, char *line, int stat)
 int			read_data(t_map *in)
 {
 	char	*line;
+	t_room	*rooms;
+	t_mypaths *links;
 	//char	**tmp;
 	int		stat;
 
+	rooms = NULL;
+	links = NULL;
 	stat = 0;
 	while (get_next_line(0, &line) > 0)
 	{
@@ -77,10 +89,10 @@ int			read_data(t_map *in)
 		{
 			if (in->ants == 0)
 				in->ants = ft_atoi(line);
-			if (ft_strchr(line, ' '))
-				handle_room(in, line, stat);
-			else if (ft_strchr(line, '-'))
-				handle_link(in, line);
+			if (ft_strchr(line, ' ') && !(handle_room(in, line, stat)))
+				return (0);
+			else if (ft_strchr(line, '-') && !(handle_link(in, line)))
+				return (0);
 			if (stat)
 				stat = 0;
 		}

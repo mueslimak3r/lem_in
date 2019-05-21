@@ -2,6 +2,20 @@
 
 // pull_path
 
+void        print_path(t_map *map, t_path *path)
+{
+    t_room  *rooms;
+
+    ft_printf("path: ");
+    rooms = path->tail;
+    while (rooms)
+    {
+        ft_printf("%s->", map->hash_info.data[rooms->hash]);
+        rooms = rooms->prev;
+    }
+    ft_printf("\n");
+}
+
 void        print_paths(t_map *map, t_path *paths, char *name)
 {
     t_room  *rooms;
@@ -143,6 +157,7 @@ void        mod_path(t_map *map, t_mypaths *p)
     if ((*p).paths->tail->hash == map->end)
     {
         //ft_printf("path complete!\n");
+        //print_path(map, (*p).paths);
         switch_lists(&(*p).paths, &(*p).complete);
         return ;
     }
@@ -163,6 +178,7 @@ void        mod_path(t_map *map, t_mypaths *p)
     {
         free((*p).removed);
         (*p).removed = NULL;
+        map->size--;
     }
 }
 
@@ -178,23 +194,13 @@ int         solve(t_map *map)
     p.removed = NULL;
     push_path(&p.paths, NULL, map->start);
     map->size = 1;
-    /*
     while (p.paths)
     {
-        print_paths(map, p.paths, "paths");
-        //print_paths(map, p.complete, "complete");
-        ft_printf("done printing\n");
+        //print_paths(map, p.paths, "paths");
         mod_path(map, &p);
-        ft_printf("parsed path\n");
-    }
-    */
-    while (p.paths)
-   {
-   //print_paths(map, p.paths, "paths");
-   mod_path(map, &p);
-    if (map->size % 100000 == 0)
-        printf("%llu paths\n", map->size);
-   //print_paths(map, p.paths, "paths");
+        if (map->size % 100000 == 0)
+            printf("%llu paths\n", map->size);
+        //print_paths(map, p.paths, "paths");
     }
     count_nodes(p.paths);
     count_nodes(p.complete);
