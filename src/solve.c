@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   solve.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alkozma <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/07 23:20:43 by alkozma           #+#    #+#             */
+/*   Updated: 2019/07/17 14:23:40 by alkozma          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/lem_in.h"
 
 // pull_path
@@ -182,6 +194,48 @@ void        mod_path(t_map *map, t_mypaths *p)
     }
 }
 
+int			get_depth(t_path **path)
+{
+	t_room	*tmp;
+	int		ret;
+
+	tmp = (*path)->tail;
+	ret = 0;
+	while (tmp)
+	{
+		tmp = tmp->prev;
+		ret++;
+	}
+	return (ret);
+}
+
+/*void		clean_up_queue(t_mypaths *mypaths, t_map *in)
+{
+	t_path	*tmp1;
+	t_room	*tmp2;
+	t_room	*buf;
+	t_path	*buf2;
+
+	tmp1 = mypaths->complete;
+	while (!tmp1->is_last)
+	{
+		tmp2 = tmp1->tail;
+		while (tmp2 && tmp2->prev)
+		{
+			buf = tmp2;
+			tmp2 = tmp2->prev;
+			free(buf);
+		}
+		free(tmp2);
+		buf2 = tmp1;
+		tmp1 = tmp1->next;
+		free(buf2);
+	}
+	ft_printf("HEY\n");
+	free(mypaths);
+	free(in);
+}*/
+
 int         solve(t_map *map)
 {
     t_mypaths   p;
@@ -196,14 +250,19 @@ int         solve(t_map *map)
     map->size = 1;
     while (p.paths)
     {
-        //print_paths(map, p.paths, "paths");
+		//ft_printf("%d\n", ind_paths(p.paths->tail, p.complete, map));
+		if (get_depth(&(p.paths)) > 10)
+			break;
         mod_path(map, &p);
-        if (map->size % 100000 == 0)
-            printf("%llu paths\n", map->size);
-        //print_paths(map, p.paths, "paths");
     }
+	/*while (p.complete)
+	{
+		ft_printf("%d\n", ind_paths(p.complete->tail, p.complete, map));
+		p.complete = p.complete->next;
+	}*/
     count_nodes(p.paths);
     count_nodes(p.complete);
     print_paths(map, p.complete, "complete");
+	//clean_up_queue(&p, map);
     return (1);
 }

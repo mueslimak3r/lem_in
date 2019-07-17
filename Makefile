@@ -6,7 +6,7 @@
 #    By: calamber <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/09/17 11:20:37 by calamber          #+#    #+#              #
-#    Updated: 2019/05/19 22:27:33 by alkozma          ###   ########.fr        #
+#    Updated: 2019/07/07 23:18:14 by alkozma          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ INC = -I includes
 
 CC = gcc
 
-FLAGS = -Wall -Wextra -Werror -g -fsanitize=address
+FLAGS = -Wall -Wextra -Werror -g #-fsanitize=address
 
 all: $(NAME)
 
