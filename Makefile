@@ -12,7 +12,7 @@
 
 NAME = lem-in
 
-SRC = main.c read.c solve.c
+SRC = main.c read.c solve.c sort_complete.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -24,7 +24,7 @@ INC = -I includes
 
 CC = gcc
 
-FLAGS = -Wall -Wextra -Werror -g #-fsanitize=address
+FLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 
 all: $(NAME)
 

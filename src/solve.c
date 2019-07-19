@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   solve.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alkozma <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: calamber <calamber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 23:20:43 by alkozma           #+#    #+#             */
-/*   Updated: 2019/07/17 14:23:40 by alkozma          ###   ########.fr       */
+/*   Updated: 2019/07/19 15:36:23 by calamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,13 @@ void        switch_lists(t_path **a, t_path **b)
         *a = NULL;
     }
     temp->next = *b;
-    temp->prev = NULL;
+    temp->prev = temp;
+    if (*b)
+    {
+        temp->prev = (*b)->prev;
+        (*b)->prev->next = temp;
+        (*b)->prev = temp;
+    }
     temp->is_last = (*b) ? false : true;
     *b = temp;
     //ft_printf("removed %p", *b);
@@ -263,6 +269,7 @@ int         solve(t_map *map)
     count_nodes(p.paths);
     count_nodes(p.complete);
     print_paths(map, p.complete, "complete");
+    sort_complete(map, &p);
 	//clean_up_queue(&p, map);
     return (1);
 }

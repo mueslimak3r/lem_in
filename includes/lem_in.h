@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lem_in.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alkozma <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: calamber <calamber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/19 21:34:59 by alkozma           #+#    #+#             */
-/*   Updated: 2019/07/06 08:03:25 by alkozma          ###   ########.fr       */
+/*   Updated: 2019/07/19 16:20:41 by calamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 # define MAX_ROOMS	10000
 # define MAX_LINKS	100
 
-# include 			"../libft/libft.h"
-# include 			<unistd.h>
+# include "../libft/libft.h"
+# include <unistd.h>
 
 typedef struct		s_room
 {
@@ -57,8 +57,23 @@ typedef struct		s_mypaths
 	struct s_path	*complete;
 }					t_mypaths;
 
+typedef struct		s_sorted
+{
+	struct s_path	*paths;
+	size_t			flow;
+	size_t			length;
+	struct s_sorted	*next;
+}					t_sorted;
+
+typedef struct		s_hash
+{
+	uint16_t		*matrix;
+	size_t			size;
+}					t_hash;
+
 int					read_data(t_map *in);
 uint16_t			hash_id(char *id);
-int         solve(t_map *map);
-
+int					solve(t_map *map);
+void				sort_complete(t_map *map, t_mypaths *p);
+void        print_path(t_map *map, t_path *path);
 #endif
