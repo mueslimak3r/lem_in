@@ -1,6 +1,5 @@
 #include "../includes/lem_in.h"
 
-
 bool    check_against(t_path *other, t_hash *hash)
 {
     t_room *rooms;
@@ -32,9 +31,16 @@ void        push_sorted(t_sorted **sorted, t_path *path)
     new = ft_memalloc(sizeof(t_path));
     new->tail = path->tail;
     new->next = NULL;
+    new->prev = new;
     if ((*sorted)->paths)
+    {
         new->next = (*sorted)->paths;
+        (*sorted)->paths->prev->next = new;
+        new->prev = (*sorted)->paths->prev;
+        (*sorted)->paths->prev = new;
+    }
     (*sorted)->paths = new;
+    (*sorted)->paths->len = path->len;
 }
 
 void        check(t_sorted **sorted, t_path *path, t_hash *hash)
@@ -43,7 +49,6 @@ void        check(t_sorted **sorted, t_path *path, t_hash *hash)
     t_sorted    *new;
 
     new = NULL;
-    push_sorted(&new, path);
     other_path = path->next;
     while (other_path != path)
     {
@@ -51,6 +56,7 @@ void        check(t_sorted **sorted, t_path *path, t_hash *hash)
             push_sorted(&new, other_path);
         other_path = other_path->next;
     }
+    push_sorted(&new, path);
     if (*sorted)
         new->next = *sorted;
     *sorted = new;
@@ -94,7 +100,7 @@ void    print_sorted(t_sorted *list, t_map *map)
     }
 }
 
-void    find_em(t_map *map, t_path *first)
+void    find_em(t_sorted **list, t_map *map, t_path *first)
 {
     t_path      *path;
     t_hash      *hash;
@@ -114,10 +120,16 @@ void    find_em(t_map *map, t_path *first)
         }
         path = path->next;
     }
+    //add_subs(list, sorted_paths);
     print_sorted(sorted_paths, map);
+    if (list)
+        ;
 }
 
 void    sort_complete(t_map *map, t_mypaths *p)
 {
-    find_em(map, p->complete);
+    t_sorted *paths;
+
+    paths = NULL;
+    find_em(&paths, map, p->complete);
 }

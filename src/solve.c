@@ -6,7 +6,7 @@
 /*   By: calamber <calamber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 23:20:43 by alkozma           #+#    #+#             */
-/*   Updated: 2019/07/19 15:36:23 by calamber         ###   ########.fr       */
+/*   Updated: 2019/07/19 16:43:49 by calamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ void        push_path(t_path **paths, t_room *old, uint16_t new_hash)
         //ft_printf("added to empty list\n");
         *paths = new;
     }
+    (*paths)->len += 1;
 }
 
 void        switch_lists(t_path **a, t_path **b)
@@ -149,6 +150,8 @@ void        switch_lists(t_path **a, t_path **b)
     }
     temp->is_last = (*b) ? false : true;
     *b = temp;
+    (*a)->len -= 1;
+    (*b)->len += 1;
     //ft_printf("removed %p", *b);
     //ft_printf(" a: %p\n", *a);
 }

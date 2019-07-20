@@ -6,7 +6,7 @@
 /*   By: calamber <calamber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/19 21:34:59 by alkozma           #+#    #+#             */
-/*   Updated: 2019/07/19 16:20:41 by calamber         ###   ########.fr       */
+/*   Updated: 2019/07/19 18:56:10 by calamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct		s_room
 typedef struct		s_path
 {
 	bool			is_last;
+	size_t			len;
 	struct s_room	*tail;
 	struct s_path	*next;
 	struct s_path	*prev;
@@ -63,6 +64,7 @@ typedef struct		s_sorted
 	size_t			flow;
 	size_t			length;
 	struct s_sorted	*next;
+	struct s_sorted	*prev;
 }					t_sorted;
 
 typedef struct		s_hash
