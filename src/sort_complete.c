@@ -3,19 +3,15 @@
 bool    check_against(t_path *other, t_hash *hash)
 {
     t_room *rooms;
-    bool    collides;
 
-    collides = false;
     rooms = other->tail;
     while (rooms)
     {
         if (rooms->hash == hash->matrix[rooms->hash])
-            collides = true;
+            return (false);
         rooms = rooms->prev;
     }
-    if (collides == false)
-        return (true);
-    return (false);
+	return (true);
 }
 
 void        push_sorted(t_sorted **sorted, t_path *path)
