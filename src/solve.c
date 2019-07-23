@@ -6,7 +6,7 @@
 /*   By: calamber <calamber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 23:20:43 by alkozma           #+#    #+#             */
-/*   Updated: 2019/07/19 16:43:49 by calamber         ###   ########.fr       */
+/*   Updated: 2019/07/23 15:46:35 by alkozma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,7 @@ void        switch_lists(t_path **a, t_path **b)
     {
         ft_printf("set *a to NULL\n");
         *a = NULL;
+		return ;
     }
     temp->next = *b;
     temp->prev = temp;
