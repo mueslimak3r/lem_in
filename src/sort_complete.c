@@ -62,23 +62,22 @@ void        check(t_sorted **sorted, t_path *path, t_hash *hash)
     *sorted = new;
 }
 
-t_hash  *hash_path(t_path *path, t_map *map)
+void    hash_path(t_hash **hash, t_path *path, t_map *map)
 {
-    t_hash *hash;
     t_room  *rooms;
 
-    hash = ft_memalloc(sizeof(t_hash));
-    if (!hash)
-        return (NULL);
-    hash->matrix = ft_memalloc((sizeof(u_int16_t) * MAX_ROOMS) + 1);
+    if (!*hash)
+        *hash = ft_memalloc(sizeof(t_hash));
+    if (!*hash)
+        return ;
+    (*hash)->matrix = ft_memalloc((sizeof(u_int16_t) * MAX_ROOMS) + 1);
     rooms = path->tail;
     while (rooms)
     {
         if (rooms->hash != map->start && rooms->hash != map->end)
-            hash->matrix[rooms->hash] = rooms->hash;
+            (*hash)->matrix[rooms->hash] = rooms->hash;
         rooms = rooms->prev;
     }
-    return (hash);
 }
 
 void    print_sorted(t_sorted *list, t_map *map)
@@ -107,13 +106,15 @@ void    find_em(t_sorted **list, t_map *map, t_path *first)
     t_sorted    *sorted_paths;
 
     sorted_paths = NULL;
+    hash = NULL;
     path = first;
     while (path)
     {
-        hash = hash_path(path, map);
+        hash_path(&hash, path, map);
         check(&sorted_paths, path, hash);
         free(hash->matrix);
         free(hash);
+        hash = NULL;
         if (path->next == first)
         {
             break ;
