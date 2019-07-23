@@ -121,7 +121,7 @@ void    find_em(t_sorted **list, t_map *map, t_path *first)
         path = path->next;
     }
     //add_subs(list, sorted_paths);
-    print_sorted(sorted_paths, map);
+    //print_sorted(sorted_paths, map);
     if (list)
         ;
 }
