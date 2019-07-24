@@ -6,7 +6,7 @@
 /*   By: calamber <calamber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/19 21:34:59 by alkozma           #+#    #+#             */
-/*   Updated: 2019/07/19 18:56:10 by calamber         ###   ########.fr       */
+/*   Updated: 2019/07/23 19:01:21 by alkozma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ typedef struct		s_sorted
 	struct s_path	*paths;
 	size_t			flow;
 	size_t			length;
+	struct s_hash	*hash;
 	struct s_sorted	*next;
 	struct s_sorted	*prev;
 }					t_sorted;
@@ -78,4 +79,9 @@ uint16_t			hash_id(char *id);
 int					solve(t_map *map);
 void				sort_complete(t_map *map, t_mypaths *p);
 void        print_path(t_map *map, t_path *path);
+int					solver(t_map *in, t_path **paths);
+void				push_sorted(t_sorted **sorted, t_path *path);
+void				hash_path(t_hash **hash, t_path *path, t_map *map);
+void				check(t_sorted **sorted, t_path *path, t_hash *hash);
+
 #endif

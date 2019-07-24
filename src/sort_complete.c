@@ -23,6 +23,7 @@ void        push_sorted(t_sorted **sorted, t_path *path)
         *sorted = ft_memalloc(sizeof(t_sorted));
         (*sorted)->paths = NULL;
         (*sorted)->next = NULL;
+		(*sorted)->hash = NULL;
     }
     new = ft_memalloc(sizeof(t_path));
     new->tail = path->tail;
@@ -91,6 +92,8 @@ void    print_sorted(t_sorted *list, t_map *map)
             path = path->next;
         }
         ft_printf("\n");
+		path = list->paths;
+		ft_printf("%d max flow\n", solver(map, &path));
         list = list->next;
     }
 }
@@ -118,7 +121,7 @@ void    find_em(t_sorted **list, t_map *map, t_path *first)
         path = path->next;
     }
     //add_subs(list, sorted_paths);
-    //print_sorted(sorted_paths, map);
+    print_sorted(sorted_paths, map);
     if (list)
         ;
 }

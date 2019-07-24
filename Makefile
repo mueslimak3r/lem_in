@@ -6,13 +6,13 @@
 #    By: calamber <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/09/17 11:20:37 by calamber          #+#    #+#              #
-#    Updated: 2019/07/07 23:18:14 by alkozma          ###   ########.fr        #
+#    Updated: 2019/07/23 18:58:27 by alkozma          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = lem-in
 
-SRC = main.c read.c solve.c sort_complete.c
+SRC = main.c read.c solve.c sort_complete.c rec.c
 
 OBJ = $(SRC:.c=.o)
 
