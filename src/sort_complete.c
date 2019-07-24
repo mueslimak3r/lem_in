@@ -24,6 +24,7 @@ void        push_sorted(t_sorted **sorted, t_path *path)
         (*sorted)->paths = NULL;
         (*sorted)->next = NULL;
 		(*sorted)->hash = NULL;
+		(*sorted)->prev = NULL;
     }
     new = ft_memalloc(sizeof(t_path));
     new->tail = path->tail;

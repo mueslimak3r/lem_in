@@ -6,7 +6,7 @@
 /*   By: alkozma <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 17:54:26 by alkozma           #+#    #+#             */
-/*   Updated: 2019/07/23 19:09:33 by alkozma          ###   ########.fr       */
+/*   Updated: 2019/07/23 23:04:50 by alkozma          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,25 @@ void	pop_head(t_sorted **list)
 	t_sorted	*buf;
 
 	tmp = *list;
+	buf = tmp->next;
+	if (tmp == buf)
+	{
+		free(*list);
+		*list = NULL;
+	}
+	else
+	{
+		free(tmp);
+		tmp = NULL;
+		*list = tmp;
+	}
+
+	// CIRCULAR POP	
+	/*tmp = *list;
 	buf = (*list)->next;
 	tmp->prev->next = tmp->next;
 	free(tmp);
-	*list = buf;
+	*list = buf;*/
 }
 
 int		score_paths(t_sorted **in)
@@ -60,6 +75,20 @@ int		score_paths(t_sorted **in)
 	return (i);
 }
 
+void	print_list(t_map *in, t_sorted **s)
+{
+	t_sorted	*tmp;
+
+	tmp = *s;
+	while (tmp)
+	{
+		print_path(in, tmp->paths);
+		if (tmp->next == *s)
+			break ;
+		tmp = tmp->next;
+	}
+}
+
 int		rec(t_sorted **augments, t_sorted **board, t_map *in)
 {
 	t_sorted	*a;
@@ -71,13 +100,17 @@ int		rec(t_sorted **augments, t_sorted **board, t_map *in)
 
 	score = score_paths(board);
 	a = *augments;
+	if (!a)
+		return (0);
 	paths = a->paths;
 	tmp = NULL;
 	hash = NULL;
-	while (paths)
+	//print_path(in, a->paths);
+	while (paths->next != a->paths)	// currently doesnt go through the augment list properly
 	{
 		push_sorted(board, paths);
-		if ((tmpscore = rec(augments, board, in)) > score)
+		//print_list(in, board);
+		if ((tmpscore = rec(&(a->next), board, in)) > score)
 			score = tmpscore;
 		else
 			pop_head(board);
@@ -110,7 +143,7 @@ int		solver(t_map *in, t_path **paths)
 	hash = NULL;
 	while (tmpath)
 	{
-		ft_printf("%d\n", hiscore);
+		//ft_printf("%d\n", hiscore);
 		hash_path(&hash, tmpath, in);
 		check(&sorted_paths, tmpath, hash);
 		itt = sorted_paths;
