@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rec.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alkozma <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: calamber <calamber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 17:54:26 by alkozma           #+#    #+#             */
-/*   Updated: 2019/07/23 23:04:50 by alkozma          ###   ########.fr       */
+/*   Updated: 2019/07/24 18:58:30 by calamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	print_list(t_map *in, t_sorted **s)
 	}
 }
 
-int		rec(t_sorted **augments, t_sorted **board, t_map *in)
+int		rec(t_sorted **augments, t_path *tmpath, t_sorted **board, t_map *in)
 {
 	t_sorted	*a;
 	t_sorted	*tmp;
@@ -106,7 +106,7 @@ int		rec(t_sorted **augments, t_sorted **board, t_map *in)
 	tmp = NULL;
 	hash = NULL;
 	//print_path(in, a->paths);
-	while (paths->next != a->paths)	// currently doesnt go through the augment list properly
+	while (paths)	// currently doesnt go through the augment list properly
 	{
 		push_sorted(board, paths);
 		//print_list(in, board);
@@ -124,7 +124,7 @@ int		rec(t_sorted **augments, t_sorted **board, t_map *in)
 	return (score);
 }
 
-int		solver(t_map *in, t_path **paths)
+int		solver(t_map *in, t_sorted *cluster)
 {
 	t_sorted	*sorted_paths;
 	t_sorted	*tmp;
@@ -134,7 +134,10 @@ int		solver(t_map *in, t_path **paths)
 	int			hiscore;
 	int			tmpscore;
 	t_sorted	*winner;
+	t_paths		*paths;
 
+	paths = cluster->paths;
+	winner = NULL;
 	hiscore = 0;
 	tmpscore = 0;
 	sorted_paths = NULL;
@@ -144,17 +147,37 @@ int		solver(t_map *in, t_path **paths)
 	while (tmpath)
 	{
 		//ft_printf("%d\n", hiscore);
-		hash_path(&hash, tmpath, in);
+		new_sorted(NULL, tmpath, &sorted_paths, in);
 		check(&sorted_paths, tmpath, hash);
 		itt = sorted_paths;
-		if ((tmpscore = rec(&itt, &tmp, in)) > hiscore)
+		while (itt)
 		{
-			winner = (tmp);
-			hiscore = tmpscore;
+			if ((tmpscore = rec(&itt, tmpath, &tmp, in)) > hiscore)
+			{
+				winner = (tmp);
+				hiscore = tmpscore;
+			}
+			if (itt->next == sorted_paths)
+				break ;
+			itt = itt->next;
 		}
+		sorted_paths = NULL;
+        hash = NULL;
 		if (tmpath->next == (*paths))
 			break ;
 		tmpath = tmpath->next;
+	}
+	if (hiscore)
+	{
+		t_path *fpath = winner;
+		ft_printf("winner:\n");
+		while (fpath)
+		{
+			print_path(in, fpath);
+			if (fpath->next == winner)
+				break ;
+			fpath = fpath->next;
+		}
 	}
 	return (hiscore);
 }

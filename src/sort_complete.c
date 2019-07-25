@@ -14,10 +14,33 @@ bool    check_against(t_path *other, t_hash *hash)
 	return (true);
 }
 
-void        push_sorted(t_sorted **sorted, t_path *path)
+void        push_sorted(t_path **list, t_path *path)
 {
     t_path *new;
 
+    if (!path)
+        return ;
+    new = ft_memalloc(sizeof(t_path));
+    new->tail = path->tail;
+    new->next = NULL;
+    new->prev = new;
+    if (*list)
+    {
+        new->next = *list;
+        (*list)->prev->next = new;
+        new->prev = (*list)->prev;
+        (*list)->prev = new;
+    }
+    *list = new;
+    (*list)->len = path->len;
+}
+
+void        new_sorted(t_path *finished, t_path *toadd, t_sorted **sorted, t_map *map)
+{
+    t_path *new;
+    t_path *f;
+
+    f = finished;
     if (!*sorted)
     {
         *sorted = ft_memalloc(sizeof(t_sorted));
@@ -26,19 +49,15 @@ void        push_sorted(t_sorted **sorted, t_path *path)
 		(*sorted)->hash = NULL;
 		(*sorted)->prev = NULL;
     }
-    new = ft_memalloc(sizeof(t_path));
-    new->tail = path->tail;
-    new->next = NULL;
-    new->prev = new;
-    if ((*sorted)->paths)
+    while (f)
     {
-        new->next = (*sorted)->paths;
-        (*sorted)->paths->prev->next = new;
-        new->prev = (*sorted)->paths->prev;
-        (*sorted)->paths->prev = new;
+        hash_path(&((*sorted)->hash), f, map);
+        push_sorted(&((*sorted)->comp), f);
+        if (f->next == finished)
+            break ;
+        f = f->next;
     }
-    (*sorted)->paths = new;
-    (*sorted)->paths->len = path->len;
+    push_sorted(&((*sorted)->comp), toadd);
 }
 
 void        check(t_sorted **sorted, t_path *path, t_hash *hash)
@@ -48,13 +67,13 @@ void        check(t_sorted **sorted, t_path *path, t_hash *hash)
 
     new = NULL;
     other_path = path->next;
+    push_sorted(&new, path);
     while (other_path != path)
     {
         if (check_against(other_path, hash))
-            push_sorted(&new, other_path);
+            push_sorted(&(new->paths), other_path);
         other_path = other_path->next;
     }
-    push_sorted(&new, path);
     if (*sorted)
         new->next = *sorted;
     *sorted = new;
@@ -92,9 +111,9 @@ void    print_sorted(t_sorted *list, t_map *map)
                 break ;
             path = path->next;
         }
-        ft_printf("\n");
+        ft_printf("\nother stuff:\n");
 		path = list->paths;
-		ft_printf("%d max flow\n", solver(map, &path));
+		ft_printf("%d max flow\n", solver(map, list));
         list = list->next;
     }
 }
@@ -110,7 +129,8 @@ void    find_em(t_sorted **list, t_map *map, t_path *first)
     path = first;
     while (path)
     {
-        hash_path(&hash, path, map);
+        
+        new_sorted(NULL, path, &sorted_paths, map);
         check(&sorted_paths, path, hash);
         free(hash->matrix);
         free(hash);
