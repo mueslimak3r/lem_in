@@ -6,7 +6,7 @@
 /*   By: calamber <calamber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 17:54:26 by alkozma           #+#    #+#             */
-/*   Updated: 2019/07/26 02:04:36 by calamber         ###   ########.fr       */
+/*   Updated: 2019/07/26 02:31:40 by calamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,17 +135,15 @@ size_t		r_solve(t_map *in, t_sorted *cluster, t_sorted **winner, t_sorted **tmp)
 	t_sorted	*sorted_paths;
 	t_path		*tmpath;
 	t_path		*itt;
-	t_hash		*hash;
 	size_t			hiscore;
 	size_t			tmpscore;
 	t_sorted	*tmp_winner;
 
 	tmpath = cluster->paths;
 	tmp_winner = NULL;
-	hiscore = (*winner) ? score_paths((*winner)->paths) : 0;
+	hiscore = *tmp ? score_paths((*tmp)->paths) : 0;
 	tmpscore = 0;
 	sorted_paths = NULL;
-	hash = NULL;
 	while (tmpath)
 	{
 		//ft_printf("%d\n", hiscore);
@@ -158,13 +156,14 @@ size_t		r_solve(t_map *in, t_sorted *cluster, t_sorted **winner, t_sorted **tmp)
 			while (itt)
 			{
 				if ((tmpscore = r_solve(in, sorted_paths, winner, &tmp_winner)) > hiscore)
+				{
 					hiscore = score_paths(tmp_winner->paths);
+					*tmp = tmp_winner;
+				}
 				if (itt->next == sorted_paths->paths)
 					break ;
 				itt = itt->next;
 			}
-			sorted_paths = NULL;
-        	hash = NULL;
 		}
 		else
 		{
@@ -194,13 +193,11 @@ t_sorted *solver(t_map *in, t_sorted *cluster)
 	tmpscore = 0;
 	tmp = NULL;
 	cluster_tmp = cluster;
-
-	t_sorted *t = NULL;
 	while (cluster_tmp)
 	{
-		if ((tmpscore = r_solve(in, cluster_tmp, &tmp, &t)) > hiscore)
+		if ((tmpscore = r_solve(in, cluster_tmp, &winner, &tmp)) > hiscore)
 		{
-			winner = (tmp);
+			winner = tmp;
 			hiscore = tmpscore;
 		}
 		if (cluster_tmp->next == cluster)
