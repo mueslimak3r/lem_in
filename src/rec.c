@@ -6,7 +6,7 @@
 /*   By: calamber <calamber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 17:54:26 by alkozma           #+#    #+#             */
-/*   Updated: 2019/07/26 02:31:40 by calamber         ###   ########.fr       */
+/*   Updated: 2019/07/26 02:55:52 by calamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,9 +206,9 @@ t_sorted *solver(t_map *in, t_sorted *cluster)
 	}
 	if (hiscore)
 	{
-		ft_printf("hiscore: %zu\n", hiscore);
 		if (!winner)
 		{
+			ft_printf("hiscore: %zu\n", hiscore);
 			ft_printf("error!\n");
 			return (NULL);
 		}

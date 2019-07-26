@@ -72,10 +72,7 @@ void        check(t_sorted **sorted, t_path *path, t_hash *hash)
     while (other_path != path)
     {
         if (check_against(other_path, hash))
-        {
-            ft_printf("saving path...\n");
             push_sorted(&((*sorted)->paths), other_path);
-        }
         other_path = other_path->next;
     }
 }

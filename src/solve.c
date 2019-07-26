@@ -6,7 +6,7 @@
 /*   By: calamber <calamber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 23:20:43 by alkozma           #+#    #+#             */
-/*   Updated: 2019/07/26 02:32:51 by alkozma          ###   ########.fr       */
+/*   Updated: 2019/07/26 02:55:04 by calamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,10 +130,7 @@ void        switch_lists(t_path **a, t_path **b)
         //ft_printf("paths: %p pathslast: %p pathsnext: %p\n", *a, (*a)->prev, (*a)->next);
     }
     else
-    {
-        ft_printf("set *a to NULL\n");
         *a = NULL;
-    }
     temp->next = *b ? *b : temp;
     temp->prev = temp;
     if (*b)
@@ -280,8 +277,6 @@ int         solve(t_map *map)
     count_nodes(p.complete);
 	count_nodes(b.paths);
 	count_nodes(b.complete);
-    print_paths(map, b.complete, "complete");
-    print_paths(map, p.complete, "complete");
     sort_complete(map, &p);
 	//clean_up_queue(&p, map);
     return (1);
