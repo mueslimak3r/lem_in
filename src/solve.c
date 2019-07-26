@@ -6,7 +6,7 @@
 /*   By: calamber <calamber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 23:20:43 by alkozma           #+#    #+#             */
-/*   Updated: 2019/07/26 02:55:04 by calamber         ###   ########.fr       */
+/*   Updated: 2019/07/26 03:21:03 by calamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,7 +240,6 @@ int			get_depth(t_path **path)
 int         solve(t_map *map)
 {
     t_mypaths   p;
-	t_mypaths	b;
 
     if (!map->start || !map->end)
         return (0);
@@ -248,26 +247,15 @@ int         solve(t_map *map)
     p.complete = NULL;
     p.paths = NULL;
     p.removed = NULL;
-    ft_memset(&b, 0, sizeof(t_mypaths));
-    b.complete = NULL;
-    b.paths = NULL;
-    b.removed = NULL;
-    push_path(&b.paths, NULL, map->end);
     push_path(&p.paths, NULL, map->start);
     map->size = 1;
     while (p.paths)
     {
 		//ft_printf("%d\n", ind_paths(p.paths->tail, p.complete, map));
-		if (get_depth(&(p.paths)) > 8)
+		if (get_depth(&(p.paths)) > 10)
 			break;
         mod_path(map, &p, 0);
     }
-	while (b.paths)
-	{
-		if (get_depth(&(b.paths)) > 8)
-			break;
-		mod_path(map, &b, 1);
-	}
 	/*while (p.complete)
 	{
 		ft_printf("%d\n", ind_paths(p.complete->tail, p.complete, map));
@@ -275,8 +263,6 @@ int         solve(t_map *map)
 	}*/
     count_nodes(p.paths);
     count_nodes(p.complete);
-	count_nodes(b.paths);
-	count_nodes(b.complete);
     sort_complete(map, &p);
 	//clean_up_queue(&p, map);
     return (1);
