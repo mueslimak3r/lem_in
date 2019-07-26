@@ -6,7 +6,7 @@
 /*   By: calamber <calamber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 17:54:26 by alkozma           #+#    #+#             */
-/*   Updated: 2019/07/26 02:55:52 by calamber         ###   ########.fr       */
+/*   Updated: 2019/07/26 03:18:43 by calamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,15 @@ size_t		r_solve(t_map *in, t_sorted *cluster, t_sorted **winner, t_sorted **tmp)
 	hiscore = *tmp ? score_paths((*tmp)->paths) : 0;
 	tmpscore = 0;
 	sorted_paths = NULL;
+	if (!tmpath)
+	{
+		if ((cluster->flow = score_paths(cluster->comp)) > hiscore)
+		{
+			*tmp = cluster;
+			hiscore = cluster->flow;
+		}
+		return (hiscore);
+	}
 	while (tmpath)
 	{
 		//ft_printf("%d\n", hiscore);
@@ -208,19 +217,12 @@ t_sorted *solver(t_map *in, t_sorted *cluster)
 	{
 		if (!winner)
 		{
-			ft_printf("hiscore: %zu\n", hiscore);
+			ft_printf("\nhiscore: %zu\n", hiscore);
 			ft_printf("error!\n");
 			return (NULL);
 		}
-		t_path *fpath = winner->comp;
-		ft_printf("winner with flow %zu:\n", winner->flow);
-		while (fpath)
-		{
-			print_path(in, fpath);
-			if (fpath->next == winner->comp)
-				break ;
-			fpath = fpath->next;
-		}
+		ft_printf("\nwinner with flow %zu", winner->flow);
+		print_paths(in, winner->comp, "");
 	}
 	return (winner);
 }

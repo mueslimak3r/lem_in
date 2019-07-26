@@ -132,16 +132,11 @@ void    find_em(t_sorted **list, t_map *map, t_path *first)
         //print_paths(map, sorted_paths->comp, "sources");
         //print_paths(map, sorted_paths->paths, "augments");
         push_cluster(sorted_paths, &clusters);
-        //ft_printf("end\n");
         if (path->next == first)
             break ;
         path = path->next;
         sorted_paths = NULL;
     }
-    //add_subs(list, sorted_paths);
-    //print_sorted(clusters, map);
-    if (list)
-        ;
     *list = solver(map, clusters);
 }
 
