@@ -19,7 +19,10 @@ void        push_sorted(t_path **list, t_path *path)
     t_path *new;
 
     if (!path)
+    {
+        ft_printf("wut path\n");
         return ;
+    }
     new = ft_memalloc(sizeof(t_path));
     new->tail = path->tail;
     new->next = new;
@@ -47,6 +50,7 @@ void        new_sorted(t_path *finished, t_path *toadd, t_sorted **sorted, t_map
         (*sorted)->next = NULL;
 		(*sorted)->hash = NULL;
 		(*sorted)->prev = NULL;
+        (*sorted)->comp = NULL;
     }
     while (f)
     {
@@ -68,7 +72,10 @@ void        check(t_sorted **sorted, t_path *path, t_hash *hash)
     while (other_path != path)
     {
         if (check_against(other_path, hash))
+        {
+            ft_printf("saving path...\n");
             push_sorted(&((*sorted)->paths), other_path);
+        }
         other_path = other_path->next;
     }
 }
@@ -98,13 +105,8 @@ void    print_sorted(t_sorted *list, t_map *map)
     {
         path = list->paths;
         ft_printf("cluster %p:\n", list);
-        while (path)
-        {
-            print_path(map, path);
-            if (path->next == list->paths)
-                break ;
-            path = path->next;
-        }
+        print_paths(map, list->comp, "sources");
+        print_paths(map, list->paths, "augments");
         list = list->next;
     }
 }
@@ -126,12 +128,14 @@ void    find_em(t_sorted **list, t_map *map, t_path *first)
     path = first;
     while (path)
     {
-        ft_printf("yo!\n");
+        //ft_printf("yo!\n");
+        //print_path(map, path);
         new_sorted(NULL, path, &sorted_paths, map);
         check(&sorted_paths, path, sorted_paths->hash);
+        //print_paths(map, sorted_paths->comp, "sources");
+        //print_paths(map, sorted_paths->paths, "augments");
         push_cluster(sorted_paths, &clusters);
-        print_sorted(clusters, map);
-        break ;
+        //ft_printf("end\n");
         if (path->next == first)
             break ;
         path = path->next;
