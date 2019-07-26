@@ -57,24 +57,20 @@ void        new_sorted(t_path *finished, t_path *toadd, t_sorted **sorted, t_map
         f = f->next;
     }
     push_sorted(&((*sorted)->comp), toadd);
+    hash_path(&((*sorted)->hash), toadd, map);
 }
 
 void        check(t_sorted **sorted, t_path *path, t_hash *hash)
 {
     t_path      *other_path;
-    t_sorted    *new;
 
-    new = NULL;
     other_path = path->next;
     while (other_path != path)
     {
         if (check_against(other_path, hash))
-            push_sorted(&(new->paths), other_path);
+            push_sorted(&((*sorted)->paths), other_path);
         other_path = other_path->next;
     }
-    if (*sorted)
-        new->next = *sorted;
-    *sorted = new;
 }
 
 void    hash_path(t_hash **hash, t_path *path, t_map *map)
@@ -109,9 +105,6 @@ void    print_sorted(t_sorted *list, t_map *map)
                 break ;
             path = path->next;
         }
-        ft_printf("\nother stuff:\n");
-		path = list->paths;
-		ft_printf("%d max flow\n", list->flow);
         list = list->next;
     }
 }
@@ -137,13 +130,18 @@ void    find_em(t_sorted **list, t_map *map, t_path *first)
         new_sorted(NULL, path, &sorted_paths, map);
         check(&sorted_paths, path, sorted_paths->hash);
         push_cluster(sorted_paths, &clusters);
+        print_sorted(clusters, map);
+        break ;
         if (path->next == first)
             break ;
         path = path->next;
+        sorted_paths = NULL;
     }
     //add_subs(list, sorted_paths);
-    //print_sorted(sorted_paths, map);
-    *list = solver(map, clusters);
+    //print_sorted(clusters, map);
+    if (list)
+        ;
+    //*list = solver(map, clusters);
 }
 
 void    sort_complete(t_map *map, t_mypaths *p)
@@ -151,6 +149,5 @@ void    sort_complete(t_map *map, t_mypaths *p)
     t_sorted *paths;
 
     paths = NULL;
-    print_paths(map, p->complete, "test print");
     find_em(&paths, map, p->complete);
 }
