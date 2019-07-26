@@ -6,7 +6,7 @@
 /*   By: calamber <calamber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/07 23:20:43 by alkozma           #+#    #+#             */
-/*   Updated: 2019/07/23 15:59:25 by calamber         ###   ########.fr       */
+/*   Updated: 2019/07/26 00:11:19 by calamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void        print_path(t_map *map, t_path *path)
 {
     t_room  *rooms;
 
-    ft_printf("path: ");
     rooms = path->tail;
     while (rooms)
     {
@@ -30,21 +29,16 @@ void        print_path(t_map *map, t_path *path)
 
 void        print_paths(t_map *map, t_path *paths, char *name)
 {
-    t_room  *rooms;
+    t_path  *tmp;
 
+    tmp = paths;
     ft_printf("%s:\n", name);
-    while (paths)
+    while (tmp)
     {
-        rooms = paths->tail;
-        while (rooms)
-        {
-            ft_printf("%s->", map->hash_info.data[rooms->hash]);
-            rooms = rooms->prev;
-        }
-        ft_printf("  %p\n", paths);
-        if (paths->is_last || paths->next == paths)
+        print_path(map, tmp);
+        if (tmp->next == paths)
             break ;
-        paths = paths->next;
+        tmp = tmp->next;
     }
 }
 

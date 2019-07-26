@@ -6,7 +6,7 @@
 /*   By: calamber <calamber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 17:54:26 by alkozma           #+#    #+#             */
-/*   Updated: 2019/07/24 18:58:30 by calamber         ###   ########.fr       */
+/*   Updated: 2019/07/26 00:12:19 by calamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,32 +43,36 @@ void	pop_head(t_sorted **list)
 	}
 	else
 	{
+		/*
 		free(tmp);
 		tmp = NULL;
-		*list = tmp;
+		*list = buf;
 	}
+	*/
 
-	// CIRCULAR POP	
-	/*tmp = *list;
-	buf = (*list)->next;
-	tmp->prev->next = tmp->next;
-	free(tmp);
-	*list = buf;*/
+		//CIRCULAR POP	
+		if (buf->next == tmp)
+			buf->next = tmp->next;
+		buf->prev = tmp->prev;
+		tmp->prev->next = buf;
+		free(tmp);
+		*list = buf;
+	}
 }
 
-int		score_paths(t_sorted **in)
+size_t		score_paths(t_path *in)
 {
 	t_path	*tmp;
-	int		i;
+	size_t		i;
 
-	if (!in || !*in)
+	if (!in)
 		return (0);
-	tmp = (*in)->paths;
+	tmp = in;
 	i = 0;
 	while (tmp)
 	{
 		i++;
-		if (tmp->next == (*in)->paths)
+		if (tmp->next == in)
 			break ;
 		tmp = tmp->next;
 	}
@@ -89,7 +93,8 @@ void	print_list(t_map *in, t_sorted **s)
 	}
 }
 
-int		rec(t_sorted **augments, t_path *tmpath, t_sorted **board, t_map *in)
+/*
+int		rec(t_sorted *augments, t_path *tmpath, t_sorted **board, t_map *in)
 {
 	t_sorted	*a;
 	t_sorted	*tmp;
@@ -110,7 +115,7 @@ int		rec(t_sorted **augments, t_path *tmpath, t_sorted **board, t_map *in)
 	{
 		push_sorted(board, paths);
 		//print_list(in, board);
-		if ((tmpscore = rec(&(a->next), board, in)) > score)
+		if ((tmpscore = rec(&(paths->next), paths, board, in)) > score)
 			score = tmpscore;
 		else
 			pop_head(board);
@@ -123,61 +128,100 @@ int		rec(t_sorted **augments, t_path *tmpath, t_sorted **board, t_map *in)
 	}
 	return (score);
 }
+*/
 
-int		solver(t_map *in, t_sorted *cluster)
+size_t		r_solve(t_map *in, t_sorted *cluster, t_sorted **winner)
 {
 	t_sorted	*sorted_paths;
 	t_sorted	*tmp;
 	t_path		*tmpath;
-	t_sorted		*itt;
+	t_path		*itt;
 	t_hash		*hash;
-	int			hiscore;
-	int			tmpscore;
-	t_sorted	*winner;
-	t_paths		*paths;
+	size_t			hiscore;
+	size_t			tmpscore;
+	t_sorted	*tmp_winner;
 
-	paths = cluster->paths;
-	winner = NULL;
+	tmpath = cluster->paths;
+	tmp_winner = NULL;
 	hiscore = 0;
 	tmpscore = 0;
 	sorted_paths = NULL;
 	tmp = NULL;
-	tmpath = *paths;
 	hash = NULL;
 	while (tmpath)
 	{
 		//ft_printf("%d\n", hiscore);
-		new_sorted(NULL, tmpath, &sorted_paths, in);
-		check(&sorted_paths, tmpath, hash);
-		itt = sorted_paths;
-		while (itt)
+		new_sorted(NULL, cluster->comp, &sorted_paths, in);
+		push_sorted(&(cluster->comp), tmpath);
+		check(&sorted_paths, tmpath, sorted_paths->hash);
+		itt = sorted_paths->paths;
+		if (itt)
 		{
-			if ((tmpscore = rec(&itt, tmpath, &tmp, in)) > hiscore)
+			while (itt)
 			{
-				winner = (tmp);
-				hiscore = tmpscore;
+				if ((tmpscore = r_solve(in, sorted_paths, &tmp)) > hiscore)
+				{
+					tmp_winner = (tmp);
+					hiscore = tmpscore;
+				}
+				if (itt->next == sorted_paths->paths)
+					break ;
+				itt = itt->next;
 			}
-			if (itt->next == sorted_paths)
-				break ;
-			itt = itt->next;
+			sorted_paths = NULL;
+        	hash = NULL;
+		}
+		else
+		{
+			if ((sorted_paths->flow = score_paths(sorted_paths->comp)) > hiscore)
+			{
+				hiscore = sorted_paths->flow;
+				tmp_winner = sorted_paths;
+			}
 		}
 		sorted_paths = NULL;
-        hash = NULL;
-		if (tmpath->next == (*paths))
+		if (tmpath->next == cluster->paths)
 			break ;
 		tmpath = tmpath->next;
 	}
+	*winner = tmp_winner ? *winner : tmp_winner;
+	return (hiscore);
+}
+
+t_sorted *solver(t_map *in, t_sorted *cluster)
+{
+	t_sorted *winner;
+	t_sorted *tmp;
+	size_t	hiscore;
+	size_t	tmpscore;
+	t_sorted	*cluster_tmp;
+
+	hiscore = 0;
+	tmpscore = 0;
+	tmp = NULL;
+	cluster_tmp = cluster;
+	while (cluster_tmp)
+	{
+		if ((tmpscore = r_solve(in, cluster_tmp, &tmp)) > hiscore)
+		{
+			winner = (tmp);
+			hiscore = tmpscore;
+		}
+		if (cluster_tmp->next == cluster)
+			break;
+		cluster_tmp = cluster_tmp->next;
+	}
 	if (hiscore)
 	{
-		t_path *fpath = winner;
-		ft_printf("winner:\n");
+		t_path *fpath = winner->comp;
+		ft_printf("winner with flow %zu:\n", winner->flow);
 		while (fpath)
 		{
 			print_path(in, fpath);
-			if (fpath->next == winner)
+			if (fpath->next == winner->comp)
 				break ;
 			fpath = fpath->next;
 		}
 	}
-	return (hiscore);
+	return (winner);
 }
