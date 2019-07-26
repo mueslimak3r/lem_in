@@ -6,7 +6,7 @@
 /*   By: calamber <calamber@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 17:54:26 by alkozma           #+#    #+#             */
-/*   Updated: 2019/07/26 00:12:19 by calamber         ###   ########.fr       */
+/*   Updated: 2019/07/26 02:04:36 by calamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,10 +130,9 @@ int		rec(t_sorted *augments, t_path *tmpath, t_sorted **board, t_map *in)
 }
 */
 
-size_t		r_solve(t_map *in, t_sorted *cluster, t_sorted **winner)
+size_t		r_solve(t_map *in, t_sorted *cluster, t_sorted **winner, t_sorted **tmp)
 {
 	t_sorted	*sorted_paths;
-	t_sorted	*tmp;
 	t_path		*tmpath;
 	t_path		*itt;
 	t_hash		*hash;
@@ -143,27 +142,23 @@ size_t		r_solve(t_map *in, t_sorted *cluster, t_sorted **winner)
 
 	tmpath = cluster->paths;
 	tmp_winner = NULL;
-	hiscore = 0;
+	hiscore = (*winner) ? score_paths((*winner)->paths) : 0;
 	tmpscore = 0;
 	sorted_paths = NULL;
-	tmp = NULL;
 	hash = NULL;
 	while (tmpath)
 	{
 		//ft_printf("%d\n", hiscore);
-		new_sorted(NULL, cluster->comp, &sorted_paths, in);
-		push_sorted(&(cluster->comp), tmpath);
+		new_sorted(cluster->comp, tmpath, &sorted_paths, in);
+		//push_sorted(&(cluster->comp), tmpath);
 		check(&sorted_paths, tmpath, sorted_paths->hash);
 		itt = sorted_paths->paths;
 		if (itt)
 		{
 			while (itt)
 			{
-				if ((tmpscore = r_solve(in, sorted_paths, &tmp)) > hiscore)
-				{
-					tmp_winner = (tmp);
-					hiscore = tmpscore;
-				}
+				if ((tmpscore = r_solve(in, sorted_paths, winner, &tmp_winner)) > hiscore)
+					hiscore = score_paths(tmp_winner->paths);
 				if (itt->next == sorted_paths->paths)
 					break ;
 				itt = itt->next;
@@ -175,8 +170,8 @@ size_t		r_solve(t_map *in, t_sorted *cluster, t_sorted **winner)
 		{
 			if ((sorted_paths->flow = score_paths(sorted_paths->comp)) > hiscore)
 			{
+				*tmp = sorted_paths;
 				hiscore = sorted_paths->flow;
-				tmp_winner = sorted_paths;
 			}
 		}
 		sorted_paths = NULL;
@@ -184,7 +179,6 @@ size_t		r_solve(t_map *in, t_sorted *cluster, t_sorted **winner)
 			break ;
 		tmpath = tmpath->next;
 	}
-	*winner = tmp_winner ? *winner : tmp_winner;
 	return (hiscore);
 }
 
@@ -200,9 +194,11 @@ t_sorted *solver(t_map *in, t_sorted *cluster)
 	tmpscore = 0;
 	tmp = NULL;
 	cluster_tmp = cluster;
+
+	t_sorted *t = NULL;
 	while (cluster_tmp)
 	{
-		if ((tmpscore = r_solve(in, cluster_tmp, &tmp)) > hiscore)
+		if ((tmpscore = r_solve(in, cluster_tmp, &tmp, &t)) > hiscore)
 		{
 			winner = (tmp);
 			hiscore = tmpscore;
@@ -213,6 +209,12 @@ t_sorted *solver(t_map *in, t_sorted *cluster)
 	}
 	if (hiscore)
 	{
+		ft_printf("hiscore: %zu\n", hiscore);
+		if (!winner)
+		{
+			ft_printf("error!\n");
+			return (NULL);
+		}
 		t_path *fpath = winner->comp;
 		ft_printf("winner with flow %zu:\n", winner->flow);
 		while (fpath)

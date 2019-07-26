@@ -145,7 +145,7 @@ void    find_em(t_sorted **list, t_map *map, t_path *first)
     //print_sorted(clusters, map);
     if (list)
         ;
-    //*list = solver(map, clusters);
+    *list = solver(map, clusters);
 }
 
 void    sort_complete(t_map *map, t_mypaths *p)
