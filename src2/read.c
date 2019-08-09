@@ -80,12 +80,12 @@ int		handle_link(t_map *in, char *line)
 int		handle_room(t_map *in, char *line, int stat)
 {
 	char		**tmp;
-	int			i;
+	//int			i;
 	uint16_t	hash;
 	t_room		*new;
 
 	tmp = ft_strsplit(line, ' ');
-	i = 0;
+	//i = 0;
 	if (!tmp[1])
 		return (0);
 	hash = hash_id(tmp[0]);

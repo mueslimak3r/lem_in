@@ -54,11 +54,11 @@ void	print_links(t_map *in, uint16_t hash)
 	t_room	*tmp;
 
 	tmp = in->hash_info.list[hash % 5000]->links;
-	/*while (tmp)
+	while (tmp)
 	{
 		ft_printf("%lld\n", tmp->hash);
 		tmp = tmp->prev;
-	}*/
+	}
 }
 
 int	check_overlaps(t_room *tail, uint16_t hash)
@@ -138,7 +138,7 @@ void	mod_path_2(t_map *in, t_cluster_node **n, int mode)
 	{
 		if (!check_overlaps(orig->path->tail, links->hash))
 			push_path(&orig, orig->path->tail, links->hash, mode, in);
-		if (links == orig->path->tail->links)
+		if (links->prev == orig->path->tail->links)
 			break ;
 		links = links->prev;
 	}
@@ -176,11 +176,12 @@ int		solve(t_map *in)
 	push_path(&tail, NULL, in->end, 1, in);
 	while (head || tail)
 	{
-		ft_printf("%d\n", i);
+		head ? print_path(in, head->path) : 0;
+		tail ? print_path(in, tail->path) : 0;
 		mod_path_2(in, &head, 0);
 		mod_path_2(in, &tail, 1);
-		head = head->next;
-		tail = tail->next;
+		head ? head = head->next : 0;
+		tail ? tail = tail->next : 0;
 		i++;
 	}
 	return (0);

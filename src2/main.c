@@ -17,7 +17,9 @@ void	print_path(t_map *in, t_path *path)
 	t_room	*rooms;
 	
 	if (!in)
+	{
 		;
+	}
 	rooms = path->tail;
 	if (!rooms)
 		ft_printf("%s\n", "NO ROOMS");
@@ -70,10 +72,10 @@ int		main(void)
 int		read_data(t_map *in)
 {
 	char	*line;
-	t_room	*rooms;
+	//room	*rooms;
 	int		stat;
 	
-	rooms = NULL;
+	//rooms = NULL;
 	stat = 0;
 	while (get_next_line(0, &line) > 0)
 	{
